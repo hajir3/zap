@@ -19,7 +19,8 @@ Dieses Plugin lädt beim Verzeichniswechsel automatisch Kommandos und macht sie 
 ### Manuell (Oh My Zsh)
 
 ```bash
-git clone https://github.com/<dein-benutzername>/zap ~/.oh-my-zsh/custom/plugins/zap
+git clone https://github.com/hajir3/zap ~/.oh-my-zsh/custom/plugins/zap
+```
 
 
 ## ✅ Lizenz
