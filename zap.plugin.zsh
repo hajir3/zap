@@ -102,7 +102,7 @@ zap() {
       echo "Available commands: upgrade, --version, global, help"
       ;;
   esac
-}
+} 
 
 # 🔄 Automatisch bei Verzeichniswechsel laden
 autoload -U add-zsh-hook
