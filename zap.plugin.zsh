@@ -19,7 +19,7 @@ zap_clear_aliases() {
   __zap_aliases=()
 }
 
-# 📥 Lädt lokale oder globale .commands und setzt Aliase
+# 📥 Lädt globale und lokale .commands
 zap_load() {
   zap_clear_aliases
 
@@ -29,8 +29,8 @@ zap_load() {
     while IFS="=" read -r name cmd; do
       [[ -n "$name" && -n "$cmd" ]] || continue
 
-      local tool="${cmd%% *}"     # Erstes Wort
-      local rest="${cmd#"$tool"}" # Rest
+      local tool="${cmd%% *}"
+      local rest="${cmd#"$tool"}"
 
       local resolved_cmd="$cmd"
       if [[ -n "${__zap_command_wrappers[$tool]}" ]]; then
@@ -43,11 +43,54 @@ zap_load() {
   done
 }
 
+# 🔼 Manuelles Update
+zap_upgrade() {
+  local plugin_dir="${0:a:h}"
+  git -C "$plugin_dir" pull --quiet && echo "✅ ZAP updated."
+  [[ -f "$plugin_dir/VERSION" ]] && <"$plugin_dir/VERSION" > "$HOME/.zap_version"
+  rm -f "$HOME/.zap_version_seen"
+}
+
+# 🔔 Automatische Update-Erinnerung
+zap_check_version() {
+  local plugin_dir="${0:a:h}"
+  local version_file="$plugin_dir/VERSION"
+  local seen_file="$HOME/.zap_version_seen"
+  local current_file="$HOME/.zap_version"
+
+  [[ -f "$version_file" ]] || return
+
+  local latest=$(<"$version_file")
+  local seen=""
+  [[ -f "$seen_file" ]] && seen=$(<"$seen_file")
+  local current=""
+  [[ -f "$current_file" ]] && current=$(<"$current_file")
+
+  if [[ "$latest" != "$seen" && "$latest" != "$current" ]]; then
+    echo "\n⚡ ZAP update $latest available."
+    echo -n "Update now? (y/n): "
+    read -r reply
+    if [[ "$reply" == [Yy] ]]; then
+      zap_upgrade
+    else
+      echo "$latest" > "$seen_file"
+    fi
+    echo ""
+  fi
+}
+
+# ➕ zap upgrade Subcommand
+zap() {
+  case "$1" in
+    upgrade) zap_upgrade ;;
+    *) echo "Usage: zap upgrade" ;;
+  esac
+}
 
 # 🔄 Automatisch bei Verzeichniswechsel laden
 autoload -U add-zsh-hook
 add-zsh-hook chpwd zap_load
 
-# 🟢 Beim Start direkt laden
+# 🟢 Initiales Laden
 zap_load
-
+zap_check_version
