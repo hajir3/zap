@@ -11,8 +11,8 @@ __zap_command_wrappers=(
   npm    'npm --prefix $(git rev-parse --show-toplevel)/frontend'
 )
 
-# 📂 Plugin-Verzeichnis ermitteln
-_zap_plugin_dir="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zap"
+# 📂 Plugin-Verzeichnis ermitteln (zur Laufzeit)
+ZAP_PLUGIN_DIR="$(cd -- "${${(%):-%x}:a:h}" && pwd)"
 
 # 🔄 Entfernt alte Aliase
 zap_clear_aliases() {
@@ -48,15 +48,15 @@ zap_load() {
 
 # 🔼 Manuelles Update
 zap_upgrade() {
-  git -C "$_zap_plugin_dir" pull --quiet && echo "✅ ZAP updated."
-  local version=$(git -C "$_zap_plugin_dir" describe --tags --abbrev=0 2>/dev/null)
+  git -C "$ZAP_PLUGIN_DIR" pull --quiet && echo "✅ ZAP updated."
+  local version=$(git -C "$ZAP_PLUGIN_DIR" describe --tags --abbrev=0 2>/dev/null)
   [[ -n "$version" ]] && echo "$version" > "$HOME/.zap_version"
   rm -f "$HOME/.zap_version_seen"
 }
 
 # 🔔 Automatische Update-Erinnerung
 zap_check_version() {
-  local latest=$(git -C "$_zap_plugin_dir" describe --tags --abbrev=0 2>/dev/null)
+  local latest=$(git -C "$ZAP_PLUGIN_DIR" describe --tags --abbrev=0 2>/dev/null)
   local seen_file="$HOME/.zap_version_seen"
   local current_file="$HOME/.zap_version"
   local seen=""
@@ -84,7 +84,7 @@ zap() {
       zap_upgrade
       ;;
     --version)
-      local version=$(git -C "$_zap_plugin_dir" describe --tags --abbrev=0 2>/dev/null)
+      local version=$(git -C "$ZAP_PLUGIN_DIR" describe --tags --abbrev=0 2>/dev/null)
       echo "zap $version"
       ;;
     "" | help)
