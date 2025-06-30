@@ -2,14 +2,17 @@
 
 # ZAP – Projektbasierte dynamische Aliase
 
-typeset -gA __zap_aliases           # speichert aktive Aliase
-typeset -gA __zap_command_wrappers  # Tool-Ersetzungen
+typeset -gA __zap_aliases
+typeset -gA __zap_command_wrappers
 
 # 🔁 Tools, die automatisch ersetzt werden
 __zap_command_wrappers=(
   gradle '$(git rev-parse --show-toplevel)/gradlew --project-dir $(git rev-parse --show-toplevel)'
   npm    'npm --prefix $(git rev-parse --show-toplevel)/frontend'
 )
+
+# 📂 Plugin-Verzeichnis ermitteln
+_zap_plugin_dir="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zap"
 
 # 🔄 Entfernt alte Aliase
 zap_clear_aliases() {
@@ -45,22 +48,17 @@ zap_load() {
 
 # 🔼 Manuelles Update
 zap_upgrade() {
-  local plugin_dir="${0:a:h}"
-  git -C "$plugin_dir" pull --quiet && echo "✅ ZAP updated."
-  [[ -f "$plugin_dir/VERSION" ]] && <"$plugin_dir/VERSION" > "$HOME/.zap_version"
+  git -C "$_zap_plugin_dir" pull --quiet && echo "✅ ZAP updated."
+  local version=$(git -C "$_zap_plugin_dir" describe --tags --abbrev=0 2>/dev/null)
+  [[ -n "$version" ]] && echo "$version" > "$HOME/.zap_version"
   rm -f "$HOME/.zap_version_seen"
 }
 
 # 🔔 Automatische Update-Erinnerung
 zap_check_version() {
-  local plugin_dir="${0:a:h}"
-  local version_file="$plugin_dir/VERSION"
+  local latest=$(git -C "$_zap_plugin_dir" describe --tags --abbrev=0 2>/dev/null)
   local seen_file="$HOME/.zap_version_seen"
   local current_file="$HOME/.zap_version"
-
-  [[ -f "$version_file" ]] || return
-
-  local latest=$(git -C "$plugin_dir" describe --tags --abbrev=0 2>/dev/null)
   local seen=""
   [[ -f "$seen_file" ]] && seen=$(<"$seen_file")
   local current=""
@@ -79,11 +77,25 @@ zap_check_version() {
   fi
 }
 
-# ➕ zap upgrade Subcommand
+# ➕ zap Subcommand
 zap() {
   case "$1" in
-    upgrade) zap_upgrade ;;
-    *) echo "Usage: zap upgrade" ;;
+    upgrade)
+      zap_upgrade
+      ;;
+    --version)
+      local version=$(git -C "$_zap_plugin_dir" describe --tags --abbrev=0 2>/dev/null)
+      echo "zap $version"
+      ;;
+    "" | help)
+      echo "Available zap commands:"
+      echo "  zap upgrade     Pull latest plugin updates"
+      echo "  zap --version   Show current version"
+      ;;
+    *)
+      echo "Unknown command: $1"
+      echo "Available commands: upgrade, --version"
+      ;;
   esac
 }
 
