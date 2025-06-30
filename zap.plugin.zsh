@@ -94,7 +94,7 @@ zap() {
       ;;
     *)
       echo "Unknown command: $1"
-      echo "Available commands: upgrade, --version"
+      echo "Available commands: upgrade, --version, help"
       ;;
   esac
 }
