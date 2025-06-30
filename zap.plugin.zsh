@@ -72,6 +72,7 @@ zap_check_version() {
       zap_upgrade
     else
       echo "$latest" > "$seen_file"
+      echo "💡 You can update anytime with: zap upgrade"
     fi
     echo ""
   fi
