@@ -88,14 +88,18 @@ zap() {
       local version=$(git -C "$ZAP_PLUGIN_DIR" describe --tags --abbrev=0 2>/dev/null)
       echo "zap $version"
       ;;
+    global)
+      nano "$HOME/.commands"
+      ;;
     "" | help)
       echo "Available zap commands:"
       echo "  zap upgrade     Pull latest plugin updates"
       echo "  zap --version   Show current version"
+      echo "  zap global      Edit global .commands file"
       ;;
     *)
       echo "Unknown command: $1"
-      echo "Available commands: upgrade, --version, help"
+      echo "Available commands: upgrade, --version, global, help"
       ;;
   esac
 }
