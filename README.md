@@ -1,6 +1,6 @@
 # zap
 
-**Projektbasierte Aliase in Zsh**, gesteuert über eine einfache `.commands` Datei.  
+**Projektbasierte Aliase in Zsh**, gesteuert über eine einfache `.commands` Datei.
 Dieses Plugin lädt beim Verzeichniswechsel automatisch Kommandos und macht sie direkt als Shell-Befehle verfügbar.
 
 ---
@@ -8,7 +8,7 @@ Dieses Plugin lädt beim Verzeichniswechsel automatisch Kommandos und macht sie 
 ## 🔧 Features
 
 - Lokale `.commands` Datei pro Projekt
-- Fallback auf `~/.commands` global
+- Global auf `~/.commands`
 - Automatische Alias-Erzeugung
 - Intelligente Ersetzung für `gradle`, `npm` u. a.
 
@@ -21,7 +21,6 @@ Dieses Plugin lädt beim Verzeichniswechsel automatisch Kommandos und macht sie 
 ```bash
 git clone https://github.com/hajir3/zap ~/.oh-my-zsh/custom/plugins/zap
 ```
-
 
 ## ✅ Lizenz
 
