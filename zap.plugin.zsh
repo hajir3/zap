@@ -21,33 +21,28 @@ zap_clear_aliases() {
 
 # 📥 Lädt lokale oder globale .commands und setzt Aliase
 zap_load() {
-  local config_file
-
-  if [[ -f "$PWD/.commands" ]]; then
-    config_file="$PWD/.commands"
-  elif [[ -f "$HOME/.commands" ]]; then
-    config_file="$HOME/.commands"
-  else
-    return
-  fi
-
   zap_clear_aliases
 
-  while IFS="=" read -r name cmd; do
-    [[ -n "$name" && -n "$cmd" ]] || continue
+  for config_file in "$HOME/.commands" "$PWD/.commands"; do
+    [[ -f "$config_file" ]] || continue
 
-    local tool="${cmd%% *}"     # Erstes Wort
-    local rest="${cmd#"$tool"}" # Rest
+    while IFS="=" read -r name cmd; do
+      [[ -n "$name" && -n "$cmd" ]] || continue
 
-    local resolved_cmd="$cmd"
-    if [[ -n "${__zap_command_wrappers[$tool]}" ]]; then
-      resolved_cmd="${__zap_command_wrappers[$tool]}${rest}"
-    fi
+      local tool="${cmd%% *}"     # Erstes Wort
+      local rest="${cmd#"$tool"}" # Rest
 
-    alias "$name"="$resolved_cmd"
-    __zap_aliases["$name"]=1
-  done < "$config_file"
+      local resolved_cmd="$cmd"
+      if [[ -n "${__zap_command_wrappers[$tool]}" ]]; then
+        resolved_cmd="${__zap_command_wrappers[$tool]}${rest}"
+      fi
+
+      alias "$name"="$resolved_cmd"
+      __zap_aliases["$name"]=1
+    done < "$config_file"
+  done
 }
+
 
 # 🔄 Automatisch bei Verzeichniswechsel laden
 autoload -U add-zsh-hook
