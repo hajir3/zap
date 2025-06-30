@@ -60,7 +60,7 @@ zap_check_version() {
 
   [[ -f "$version_file" ]] || return
 
-  local latest=$(<"$version_file")
+  local latest=$(git -C "$plugin_dir" describe --tags --abbrev=0 2>/dev/null)
   local seen=""
   [[ -f "$seen_file" ]] && seen=$(<"$seen_file")
   local current=""
