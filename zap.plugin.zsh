@@ -48,15 +48,17 @@ zap_load() {
 
 # 🔼 Manuelles Update
 zap_upgrade() {
+  git -C "$ZAP_PLUGIN_DIR" fetch --tags --quiet
   git -C "$ZAP_PLUGIN_DIR" pull --quiet && echo "✅ ZAP updated."
-  local version=$(git -C "$ZAP_PLUGIN_DIR" describe --tags --abbrev=0 2>/dev/null)
+  local version=$(git -C "$ZAP_PLUGIN_DIR" tag -l --sort=-version:refname | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | head -1 2>/dev/null)
   [[ -n "$version" ]] && echo "$version" > "$HOME/.zap_version"
   rm -f "$HOME/.zap_version_seen"
 }
 
 # 🔔 Automatische Update-Erinnerung
 zap_check_version() {
-  local latest=$(git -C "$ZAP_PLUGIN_DIR" describe --tags --abbrev=0 2>/dev/null)
+  git -C "$ZAP_PLUGIN_DIR" fetch --tags --quiet 2>/dev/null
+  local latest=$(git -C "$ZAP_PLUGIN_DIR" tag -l --sort=-version:refname | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | head -1 2>/dev/null)
   local seen_file="$HOME/.zap_version_seen"
   local current_file="$HOME/.zap_version"
   local seen=""
@@ -85,7 +87,7 @@ zap() {
       zap_upgrade
       ;;
     --version)
-      local version=$(git -C "$ZAP_PLUGIN_DIR" describe --tags --abbrev=0 2>/dev/null)
+      local version=$(git -C "$ZAP_PLUGIN_DIR" tag -l --sort=-version:refname | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | head -1 2>/dev/null)
       echo "zap $version"
       ;;
     global)
