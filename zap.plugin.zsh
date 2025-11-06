@@ -5,18 +5,25 @@
 typeset -gA __zap_aliases
 typeset -gA __zap_command_wrappers
 
-# 🔍 Findet Datei via Breadth-First Search (aufwärts)
+# 🔍 Findet Datei im aktuellen oder in Child-Verzeichnissen
 __zap_find_project_file() {
   local target_file="$1"
   local search_dir="${2:-$PWD}"
 
-  while [[ "$search_dir" != "/" ]]; do
-    if [[ -f "$search_dir/$target_file" ]]; then
-      echo "$search_dir"
-      return 0
-    fi
-    search_dir="${search_dir:h}"
-  done
+  # Erst im aktuellen Verzeichnis suchen
+  if [[ -f "$search_dir/$target_file" ]]; then
+    echo "$search_dir"
+    return 0
+  fi
+
+  # Dann in direkten Child-Verzeichnissen suchen
+  local found_dir
+  found_dir=$(find "$search_dir" -maxdepth 2 -type f -name "$target_file" 2>/dev/null | head -1)
+  if [[ -n "$found_dir" ]]; then
+    echo "${found_dir:h}"
+    return 0
+  fi
+  
   return 1
 }
 
@@ -24,7 +31,7 @@ __zap_find_project_file() {
 __zap_gradle() {
   local project_dir=$(__zap_find_project_file build.gradle)
   if [[ -z "$project_dir" ]]; then
-    echo "❌ Error: No build.gradle found in current or parent directories"
+    echo "❌ Error: No build.gradle found in current or child directories"
     return 1
   fi
   "$project_dir/gradlew" --project-dir "$project_dir" "$@"
@@ -34,7 +41,7 @@ __zap_gradle() {
 __zap_npm() {
   local project_dir=$(__zap_find_project_file package.json)
   if [[ -z "$project_dir" ]]; then
-    echo "❌ Error: No package.json found in current or parent directories"
+    echo "❌ Error: No package.json found in current or child directories"
     return 1
   fi
   npm --prefix "$project_dir" "$@"
