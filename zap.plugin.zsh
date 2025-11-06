@@ -126,19 +126,33 @@ zap() {
               format=npm run format
               check=npm run check
 EOF
-        echo "✨ Created ~/.commands with template"
+        echo "✨ Created ~/.commands file"
       fi
       nano "$HOME/.commands"
+      ;;
+    set)
+      # Erstelle Template für lokales .commands, falls nicht existiert
+      if [[ ! -f "$PWD/.commands" ]]; then
+        cat > "$PWD/.commands" <<'EOF'
+              # ZAP - Project-based Dynamic Aliases
+              # https://github.com/hajir3/zap
+              # Alias Format: alias_name=command
+
+EOF
+        echo "✨ Created .commands with template"
+      fi
+      nano "$PWD/.commands"
       ;;
     "" | help)
       echo "Available zap commands:"
       echo "  zap upgrade     Pull latest plugin updates"
       echo "  zap --version   Show current version"
       echo "  zap global      Edit global .commands file"
+      echo "  zap set         Edit local .commands file"
       ;;
     *)
       echo "Unknown command: $1"
-      echo "Available commands: upgrade, --version, global, help"
+      echo "Available commands: upgrade, --version, global, set, help"
       ;;
   esac
 } 
