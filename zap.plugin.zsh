@@ -5,10 +5,25 @@
 typeset -gA __zap_aliases
 typeset -gA __zap_command_wrappers
 
+# 🔍 Findet Datei via Breadth-First Search (aufwärts)
+__zap_find_project_file() {
+  local target_file="$1"
+  local search_dir="${2:-$PWD}"
+
+  while [[ "$search_dir" != "/" ]]; do
+    if [[ -f "$search_dir/$target_file" ]]; then
+      echo "$search_dir"
+      return 0
+    fi
+    search_dir="${search_dir:h}"
+  done
+  return 1
+}
+
 # 🔁 Tools, die automatisch ersetzt werden
 __zap_command_wrappers=(
-  gradle '$(git rev-parse --show-toplevel)/gradlew --project-dir $(git rev-parse --show-toplevel)'
-  npm    'npm --prefix $(git rev-parse --show-toplevel)/frontend'
+  gradle '$(__zap_find_project_file build.gradle)/gradlew --project-dir $(__zap_find_project_file build.gradle)'
+  npm    'npm --prefix $(__zap_find_project_file package.json)'
 )
 
 # 📂 Plugin-Verzeichnis ermitteln (zur Laufzeit)
