@@ -109,31 +109,31 @@ zap() {
       # Erstelle Template, falls .commands nicht existiert
       if [[ ! -f "$HOME/.commands" ]]; then
         cat > "$HOME/.commands" <<'EOF'
-              # ZAP - Project-based Dynamic Aliases
-              # ZSH Plugin
-              # https://github.com/hajir3/zap
-              # Alias Format: alias_name=command
+# ZAP - Project-based Dynamic Aliases
+# ZSH Plugin
+# https://github.com/hajir3/zap
+# Alias Format: alias_name=command
 
-              # === Gradle Commands ===
-              build=gradle build
-              test=gradle test
-              boot=gradle bootRun
-              clean=gradle clean
-              cbuild=gradle clean build
+# === Gradle Commands ===
+build=gradle build
+test=gradle test
+boot=gradle bootRun
+clean=gradle clean
+cbuild=gradle clean build
 
-              # === npm Commands ===
-              run=npm run dev
-              lint=npm run lint
-              format=npm run format
-              check=npm run check
+# === npm Commands ===
+run=npm run dev
+lint=npm run lint
+format=npm run format
+check=npm run check
 
-              # === Git Commands ===
-              dev=git checkout dev && git pull
-              main=git checkout main && git pull
-              status=git status
-              cout=git checkout
-              pull=git pull
-              push=git push
+# === Git Commands ===
+dev=git checkout dev && git pull
+main=git checkout main && git pull
+status=git status
+cout=git checkout
+pull=git pull
+push=git push
 EOF
         echo "✨ Created ~/.commands file"
       fi
