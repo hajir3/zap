@@ -8,13 +8,14 @@ build=gradle build
 test=gradle test
 boot=gradle bootRun
 clean=gradle clean
-cbuild=gradle clean build
+cleanb=gradle clean build
 
 # === npm Commands ===
 run=npm run dev
 lint=npm run lint
 format=npm run format
 check=npm run check
+npmi=npm install
 
 # === Git Commands ===
 dev=git checkout dev && git pull
