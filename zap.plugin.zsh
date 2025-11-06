@@ -115,11 +115,11 @@ zap() {
 # Alias Format: alias_name=command
 
 # === Gradle Commands ===
-build=gradle build
-test=gradle test
-boot=gradle bootRun
-clean=gradle clean
-cbuild=gradle clean build
+build=./gradlew build
+test=./gradlew test
+boot=./gradlew bootRun
+clean=./gradlew clean
+cbuild=./gradlew clean build
 
 # === npm Commands ===
 run=npm run dev
