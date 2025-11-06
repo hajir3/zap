@@ -106,6 +106,28 @@ zap() {
       echo "zap $version"
       ;;
     global)
+      # Erstelle Template, falls .commands nicht existiert
+      if [[ ! -f "$HOME/.commands" ]]; then
+        cat > "$HOME/.commands" <<'EOF'
+              # ZAP - Project-based Dynamic Aliases
+              # https://github.com/hajir3/zap
+              # Alias Format: alias_name=command
+
+              # === Gradle Commands ===
+              build=gradle build
+              test=gradle test
+              boot=gradle bootRun
+              clean=gradle clean
+              cbuild=gradle clean build
+
+              # === npm Commands ===
+              run=npm run dev
+              lint=npm run lint
+              format=npm run format
+              check=npm run check
+EOF
+        echo "✨ Created ~/.commands with template"
+      fi
       nano "$HOME/.commands"
       ;;
     "" | help)
