@@ -125,6 +125,14 @@ zap() {
               lint=npm run lint
               format=npm run format
               check=npm run check
+
+              # === Git Commands ===
+              dev=git checkout dev && git pull
+              main=git checkout main && git pull
+              status=git status
+              cout=git checkout
+              pull=git pull
+              push=git push
 EOF
         echo "✨ Created ~/.commands file"
       fi
