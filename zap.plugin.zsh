@@ -110,6 +110,7 @@ zap() {
       if [[ ! -f "$HOME/.commands" ]]; then
         cat > "$HOME/.commands" <<'EOF'
               # ZAP - Project-based Dynamic Aliases
+              # ZSH Plugin
               # https://github.com/hajir3/zap
               # Alias Format: alias_name=command
 
@@ -143,6 +144,7 @@ EOF
       if [[ ! -f "$PWD/.commands" ]]; then
         cat > "$PWD/.commands" <<'EOF'
               # ZAP - Project-based Dynamic Aliases
+              # ZSH Plugin
               # https://github.com/hajir3/zap
               # Alias Format: alias_name=command
 
