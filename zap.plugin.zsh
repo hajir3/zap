@@ -20,10 +20,30 @@ __zap_find_project_file() {
   return 1
 }
 
+# 🔧 Gradle Wrapper Helper
+__zap_gradle() {
+  local project_dir=$(__zap_find_project_file build.gradle)
+  if [[ -z "$project_dir" ]]; then
+    echo "❌ Error: No build.gradle found in current or parent directories"
+    return 1
+  fi
+  "$project_dir/gradlew" --project-dir "$project_dir" "$@"
+}
+
+# 🔧 npm Helper
+__zap_npm() {
+  local project_dir=$(__zap_find_project_file package.json)
+  if [[ -z "$project_dir" ]]; then
+    echo "❌ Error: No package.json found in current or parent directories"
+    return 1
+  fi
+  npm --prefix "$project_dir" "$@"
+}
+
 # 🔁 Tools, die automatisch ersetzt werden
 __zap_command_wrappers=(
-  gradle '$(__zap_find_project_file build.gradle)/gradlew --project-dir $(__zap_find_project_file build.gradle)'
-  npm    'npm --prefix $(__zap_find_project_file package.json)'
+  gradle '__zap_gradle'
+  npm    '__zap_npm'
 )
 
 # 📂 Plugin-Verzeichnis ermitteln (zur Laufzeit)
@@ -115,11 +135,11 @@ zap() {
 # Alias Format: alias_name=command
 
 # === Gradle Commands ===
-build=./gradlew build
-test=./gradlew test
-boot=./gradlew bootRun
-clean=./gradlew clean
-cbuild=./gradlew clean build
+build=gradle build
+test=gradle test
+boot=gradle bootRun
+clean=gradle clean
+cbuild=gradle clean build
 
 # === npm Commands ===
 run=npm run dev
