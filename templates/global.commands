@@ -25,3 +25,4 @@ status=git status
 cout=git checkout
 pull=git pull
 push=git push
+gitClean=git fetch --prune && git branch -vv | grep ': gone]' | awk '{print $1}' | xargs -r git branch -d
